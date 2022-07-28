@@ -45,7 +45,7 @@ steps:
     git add --all
     git commit -m "commit after extract"
     git remote rm origin
-    git remote add origin https://<<<REPO_PASSWORD>>>@<<<REPO_URL>>>
+    git remote add origin https://teekamsingh0907@dev.azure.com/teekamsingh0907/MyTestPlan1/_git/ADO%20BR1
     git push -u origin HEAD:master
   displayName: 'Push to Repo'
   condition: or(eq(variables['BUILD_TYPE'], 'retrieve'),eq(variables['BUILD_TYPE'], 'both'))
