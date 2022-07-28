@@ -1,0 +1,51 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+# - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+
+- script: |
+    echo "Build Type: $(BUILD_TYPE)"
+  displayName: 'Confirming Variables'
+
+- task: Ant@1
+  inputs:
+    buildFile: 'MyDevWorks/build.xml'
+    options: 
+    targets: 'retrieve'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+  displayName: 'Retrieving from Source Org'
+  condition: or(eq(variables['BUILD_TYPE'], 'retrieve'),eq(variables['BUILD_TYPE'], 'both'))
+
+- task: Ant@1
+  inputs:
+    buildFile: 'MyDevWorks/build.xml'
+    options: 
+    targets: 'deployCode'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+  displayName: 'Deploy to Target Org'
+  condition: or(eq(variables['BUILD_TYPE'], 'deploy'),eq(variables['BUILD_TYPE'], 'both'))
+
+- script: |
+    echo ***All Extract Successfull!!!***
+    echo ***Starting copying from VM to Repo****
+    git config --local user.email "teekam.singh@360degreecloud.in"
+    git config --local user.name "rock"
+    git config --local http.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+    git add --all
+    git commit -m "commit after extract"
+    git remote rm origin
+    git remote add origin https://<<<apthyx5ivw7povf6cabyzfem5xcsnkbwdb4ak7r3sppc2wn6i7xa>>>@<<<https://teekamsingh0907@dev.azure.com/teekamsingh0907/MyTestPlan1/_git/ADO%20BR1>>>
+    git push -u origin HEAD:master
+  displayName: 'Push to Repo'
+  condition: or(eq(variables['BUILD_TYPE'], 'retrieve'),eq(variables['BUILD_TYPE'], 'both'))
