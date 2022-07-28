@@ -11,3 +11,4 @@ This code samples provide a simple retrieve and deploy between azure repo and a 
 
 # Build and Test
 Youtube Link
+https://www.youtube.com/watch?v=OtPA06aBBu8&t=325s
